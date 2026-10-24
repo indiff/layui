@@ -78,14 +78,42 @@ jobs:
           DIR_NAME="release/assets/layui-${{ env.VERSION }}"
           echo "filename=$DIR_NAME" >> $GITHUB_OUTPUT
 
-      - name: GH Release
-        id: create_release
-        uses: softprops/action-gh-release@v3
+      # - name: GH Release
+      #   id: create_release
+      #   uses: softprops/action-gh-release@v3
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     body: |
+      #       - **更新日志**: https://layui.dev/docs/3/versions.html#${{ env.VERSION }}
+      #       - **本次贡献**: ${{ steps.contributors.outputs.usernames }} 🎉
+      #     prerelease: ${{ steps.prerelease.outputs.prerelease }}
+      #     files: ${{ steps.asset.outputs.filename }}.zip
+      - name: Release
+        run: |
+          set -xe
+          sudo apt-get update
+          sudo apt-get install -y zip unzip systemd language-pack-zh-hans language-pack-zh-hans-base locales tree
+          sudo locale-gen zh_CN.UTF-8; /usr/bin/localectl set-locale LANG=zh_CN.UTF-8 || true ; 
+          /usr/bin/timedatectl set-timezone Asia/Shanghai || true; 
+          /usr/bin/timedatectl set-ntp true || true;
+          TAG_NAME=$(date +'%Y%m%d_%H%M')_layui
+          
+          cat <<'EOF' >> hello.md
+          - **更新日志**: https://layui.dev/docs/3/versions.html#${{ env.VERSION }}
+          - **本次贡献**: ${{ steps.contributors.outputs.usernames }} 🎉
+          Proxy download:
+          ```bash         
+          curl -#Lo /opt/percona80.zip "https://ghfast.top/https://github.com/indiff/indiff/releases/download/$TAG_NAME/${{ steps.asset.outputs.filename }}.zip  --insecure"
+          ```
+          
+          Direct download:
+          ```bash         
+          curl -#Lo /opt/percona80.zip "https://github.com/indiff/indiff/releases/download/$TAG_NAME/${{ steps.asset.outputs.filename }}.zip"
+          ```
+          EOF
+  
+          gh release create $TAG_NAME -F hello.md "${{ steps.asset.outputs.filename }}.zip"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body: |
-            - **更新日志**: https://layui.dev/docs/3/versions.html#${{ env.VERSION }}
-            - **本次贡献**: ${{ steps.contributors.outputs.usernames }} 🎉
-          prerelease: ${{ steps.prerelease.outputs.prerelease }}
-          files: ${{ steps.asset.outputs.filename }}.zip
+          GITHUB_TOKEN: ${{ github.token }}
+      
