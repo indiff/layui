@@ -104,16 +104,16 @@ jobs:
           - **本次贡献**: ${{ steps.contributors.outputs.usernames }} 🎉
           Proxy download:
           ```bash         
-          curl -#Lo /opt/percona80.zip "https://ghfast.top/https://github.com/indiff/indiff/releases/download/$TAG_NAME/${{ steps.asset.outputs.filename }}.zip  --insecure"
+          curl -#Lo /opt/shit.zip "https://ghfast.top/https://github.com/indiff/indiff/releases/download/$TAG_NAME/${{ steps.asset.outputs.filename }}.zip  --insecure"
           ```
           
           Direct download:
           ```bash         
-          curl -#Lo /opt/percona80.zip "https://github.com/indiff/indiff/releases/download/$TAG_NAME/${{ steps.asset.outputs.filename }}.zip"
+          curl -#Lo /opt/shit.zip "https://github.com/indiff/indiff/releases/download/$TAG_NAME/${{ steps.asset.outputs.filename }}.zip"
           ```
           EOF
   
-          gh release create $TAG_NAME -F hello.md "${{ steps.asset.outputs.filename }}.zip"
+          gh release create $TAG_NAME -F hello.md release/assets/*.zip
         env:
           GITHUB_TOKEN: ${{ github.token }}
       
