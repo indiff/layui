@@ -45,8 +45,12 @@ if (!env.V) {
 
   // 创建压缩包
   const output = fs.createWriteStream(`${folder}.zip`);
-  const archive = archiver('zip', {
-    zlib: { level: 9 }, // 压缩级别
+  // const archive = archiver('zip', {
+  //   zlib: { level: 9 }, 
+  // });
+
+  const archive = new ZipArchive({   
+    zlib: { level: 9 },// 压缩级别
   });
 
   output.on('close', () => {
