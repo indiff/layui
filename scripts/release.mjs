@@ -6,7 +6,8 @@ import { createRequire } from 'node:module';
 import shell from 'shelljs';
 import fs from 'node:fs';
 import path from 'node:path';
-import archiver from 'archiver';
+// import archiver from 'archiver';
+import { ZipArchive, TarArchive } from 'archiver';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
